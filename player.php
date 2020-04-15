@@ -19,18 +19,51 @@ session_start();
   <script src="jquery.min.js"></script>
   <script src="bootstrap.min.js"></script>
   <style>
-  .toggle-btn
+	body{
+		background-image: url("black.jpg");
+		height: 100%;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+    padding: 100px;
+    font-size:20px;
+  }
+
+  .btn-secondary
   {
-    margin:10px;
-    border-radius:10px;
+
+    height: 70px;
+  border-radius: 10px;
+	margin: 15px;
 	-webkit-transition: .3s all ease-in-out;
   -o-transition: .3s all ease-in-out;
   transition: .3s all ease-in-out;
   }
+
+  .btn-primary
+  {
+    background-color: #42a2a9;
+    border-color: #929eaa;
+    margin-bottom: 3px;
+    font-weight:700;
+
+  }
   .form
   {
+    
     display:none;
 
+  }
+
+  label
+  {
+    color: white;
+  }
+
+  a
+  {
+    color: white;
+    font-weight:700;
   }
 
 .loader {
@@ -61,6 +94,7 @@ session_start();
   100% { transform: rotate(360deg); }
 }
 
+
   </style>
   <!-- loader script -->
   <script>
@@ -83,15 +117,16 @@ session_start();
     <div class="row">
       <!-- New player form -->
       <div class="col-sm-6">
-        <button class="toggle-btn"><i class="fa fa-user-plus" style="font-size:36px"> New Player</i></button>
+        <button type="button" class="btn btn-secondary"><i class="fa fa-user-plus" style="font-size:36px"> New Player</i></button>
         <form class="form" method="post" action="">
-          <label>Player Name:</label><input type="textbox" name="name" required><br><br>
+          <label >Player Name:</label><br>
+          <input type="text" name="name" required><br><br>
           <input type="submit" name="start" class="btn btn-success btn-lg" value="Start Game">
         </form>
       </div>
       <!-- Existing players -->
       <div class="col-sm-6">
-        <button class="toggle-btn"><i class="fa fa-users" style="font-size:36px"> Existing Players</i></button>
+        <button type= "button" class="btn-secondary" ><i class="fa fa-users" style="font-size:36px"> Existing Players</i></button>
         <form class="form" method="post" action="">
         <?php
         // Get all player names from userdb table
@@ -131,7 +166,7 @@ session_start();
   <script>
   //form toggle new player and existing player
       $(function(){
-      $(".toggle-btn").click(function(){
+      $(".btn-secondary").click(function(){
         $(this).siblings('.form').slideToggle(500);
       });
       });
@@ -149,7 +184,7 @@ session_start();
 
 <?php
 //for new player start with level 1
-if(isset($_POST['start']))
+if(!empty(isset($_POST['start'])))
 {
   $name=$_POST['name'];
   $query="INSERT INTO userdb(`name`) VALUES('$name')";
