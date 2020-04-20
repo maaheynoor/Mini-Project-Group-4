@@ -16,7 +16,7 @@ $name=$_SESSION['name'];
 canvas{
 position:absolute;
 left:20px;
-background-image: url('bg1.jpg');
+background-image: url('game_images/bg1.jpg');
 background-repeat:no-repeat;
 background-size: cover
 }
@@ -44,7 +44,8 @@ background: linear-gradient(to bottom,  #ccffb3 0%, #99ccff 100%);
   <form method="POST" action="" id="level1">
   <input type="hidden" name="time1" id="time">
   </form>
-
+<audio id="audio" src="bat_hit_ball.mp3" style="display:none"></audio>
+<audio id="audio2" src="bounce_ball.mp3" style="display:none"></audio>
   <div class="info">
     <p>Level: Beginner</p>
     <p>Player Name: <?php echo $name;?></p>
@@ -178,7 +179,7 @@ function drawbrick(row,col,width, height,padding,offtop,offleft) {
          this.bricks[c][r].y=y;
          ctx = game.context;
          const img = new Image();
-         img.src = 'brick.jpg';
+         img.src = 'game_images/bricks1.jpg';
          ctx.drawImage(img, x, y, this.width, this.height);
          // ctx.beginPath();
          // ctx.rect(x,y, this.width,this.height);
@@ -191,6 +192,7 @@ function drawbrick(row,col,width, height,padding,offtop,offleft) {
   }
 }
 
+
 function collision() {
     for(var c=0; c<brick.col; c++) {
         for(var r=0; r<brick.row; r++) {
@@ -200,6 +202,9 @@ function collision() {
                     ball.dy = -ball.dy;
                     b.status = 0;
 					score+=10;
+          var audio = document.getElementById("audio");
+          audio.src = "bat_hit_ball.mp3";
+          audio.play();
 					if(score == brick.row*brick.col*10) {
                         alert("YOU WIN, CONGRATULATIONS!");
                         var form=document.getElementById("level1");
@@ -251,7 +256,7 @@ function drawpaddle(x,height,width){
   // con.fill();
   // con.closePath();
   const paddleimg = new Image();
-  paddleimg.src = 'paddle2.jpg';
+  paddleimg.src = 'game_images/paddle1.jpg';
   con.drawImage(paddleimg, this.x, game.canvas.height-this.height, this.width, this.height);
   }
 }
@@ -316,15 +321,24 @@ function drawText() {
 
 function updateGame() {
     game.clear();
+    var audio = document.getElementById("audio2");
+
+
     if(ball.x + ball.dx > game.canvas.width-ball.radius || ball.x + ball.dx < ball.radius) {
         ball.dx = -ball.dx;
+        audio.src = "bounce_ball.mp3";
+        audio.play();
     }
     if(ball.y + ball.dy < ball.radius) {
         ball.dy = -ball.dy;
+        audio.src = "bounce_ball.mp3";
+        audio.play();
     }
     else if(ball.y  > game.canvas.height-paddle.height-ball.radius) {
         if(ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
             ball.dy = -ball.dy;
+            audio.src = "bounce_ball.mp3";
+            audio.play();
         }
         else {
 			if(lives<=0){

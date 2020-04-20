@@ -7,17 +7,38 @@ $name=$_SESSION['name'];
 <html>
 <head>
 <title>Brick Breakout Game</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
 canvas{
-  background-color: #32ddff;
   position:absolute;
-  left:10%;
-    background-image: url('bg2.jpg');
+  left:20px;
+  top:10px;
+  background-image: url('game_images/bg2.jpg');
 background-repeat:no-repeat;
  background-size: cover;
 }
 body{
- background: linear-gradient(to top, #99ccff 0%, #3399ff 100%);
+
+ background: linear-gradient(to top, #5badb8 0%, #5badb8 100%);
+}
+.info{
+  position:absolute;
+  left:1040px;
+  top:10px;
+  height:600px;
+  width:250px;
+  background-color:#f5f5f0;
+  color:#2a586f;
+  padding-left:20px;
+  padding-right: 20px;
+  border:2px solid #ccccb3;
+  border-radius:20px;
+  font-size:20px;
+  font-family: Lucida;
 }
 </style>
 </head>
@@ -25,6 +46,32 @@ body{
   <form method="POST" action="" id="level2">
   <input type="hidden" name="time2" id="time">
   </form>
+
+  <div class="info">
+    <p>Level: Intermediate</p>
+    <p>Player Name: <?php echo $name;?></p>
+    <p id="timeelapsed"></p>
+    <p id="score"></p>
+    <p id="lives"></p>
+    <audio id="audio" src="bat_hit_ball.mp3" style="display:none"></audio>
+    <audio id="audio2" src="bounce_ball.mp3" style="display:none"></audio>
+    <?php
+    $getquery="SELECT `level2` FROM `userdb` WHERE `name`='$name'";
+    $getresult=mysqli_query($con,$getquery);
+    if($getresult->num_rows > 0)
+    {
+        $row=$getresult->fetch_assoc();
+        $oldlevel2=$row['level2'];
+    }
+    if($oldlevel2!=0){
+    ?>
+    <p>Your Best Time: <?php echo $oldlevel2;?> seconds</p>
+  <?php }?>
+    <button id="gamebutton" class="btn btn-outline-dark" onclick="gamebutton(this)" style="display:none;"><i class="fa fa-pause"></i></button>
+    <br>
+    <button class="btn btn-outline-danger" onClick="javascript:if(confirm('Do you want to Quit the game?')){window.location.replace('quit.php')}">Quit Game</button>
+  </div>
+
 <script>
 var ball;
 var paddle;
@@ -35,25 +82,60 @@ var enter=false;
 var px=Math.random()*5;
 var offset=-60;
 //Timer
-var isPaused = true;
+var timePaused = true;
 var time=0;
 var t=document.getElementById("time");
+var te=document.getElementById("timeelapsed");
+var s=document.getElementById("score");
+var l=document.getElementById("lives");
+var gamepaused=false;
+var pause_enter=enter;
 var myVar = setInterval(myTimer ,1000);
-function myTimer() {
 
-     if (!isPaused){
+function gamebutton(b)
+{
+  if(gamepaused==true){
+    resume();
+    gameplay();
+    if(pause_enter)
+    {
+      enter=true;
+    }
+    b.innerHTML="<i class='fa fa-pause'></i>";
+  }
+  else {
+    pause();
+    pause_enter=enter;
+    enter=false;
+    gamepause();
+    b.innerHTML="<i class='fa fa-play'></i>";
+  }
+
+}
+
+function gamepause()
+{
+  gamepaused=true;
+}
+function gameplay()
+{
+  gamepaused=false;
+}
+
+function myTimer() {
+     if (!timePaused){
      ++time;
   }
 }
 
 function pause()
 {
-	isPaused = true;
+	timePaused = true;
 }
 
 function resume()
 {
-    isPaused = false;
+    timePaused = false;
 }
 
 function startGame() {
@@ -116,11 +198,9 @@ function drawbrick(row,col,width, height,padding,offtop,offleft) {
          this.bricks[c][r].x=x;
          this.bricks[c][r].y=y;
          ctx = game.context;
-         ctx.beginPath();
-         ctx.rect(x,y, this.width,this.height);
-         ctx.fillStyle = "#df9f9f";
-         ctx.fill();
-         ctx.closePath();
+         const img = new Image();
+         img.src = 'game_images/bricks2.jpg';
+         ctx.drawImage(img, x, y, this.width, this.height);
        }
      }
    }
@@ -137,6 +217,9 @@ function collision() {
                     ball.dy = -ball.dy;
                     b.status = 0;
 					score+=10;
+          var audio = document.getElementById("audio");
+          audio.src = "bat_hit_ball.mp3";
+          audio.play();
 					if(score == brick.count*10) {
                        //alert(brick.count)
 						brick.updatebricks(); //added here not checked
@@ -179,8 +262,13 @@ function drawball(x,y,dx,dy,radius)
   this.updateball=function(){
     con=game.context;
     con.beginPath();
+    //arc center x,y radius,from angle to angle
     con.arc(this.x,this.y, this.radius, 0, Math.PI*2);
-    con.fillStyle = "#bf4080";
+    con.fillStyle = "#ac3939";
+    var grd = con.createRadialGradient(this.x-2,this.y-2, this.radius/20,this.x,this.y, this.radius);
+    grd.addColorStop(0,"#ff99bb");
+    grd.addColorStop(1,"#ac3939");
+    con.fillStyle =grd;
     con.fill();
     con.closePath();
   }
@@ -196,15 +284,15 @@ function drawpaddle(x,height,width){
   document.addEventListener("keyup", keyUpHandler, false);
   this.updatepaddle=function(){
   con=game.context;
-  con.beginPath();
-  con.rect(this.x, game.canvas.height-this.height, this.width, this.height);
-  con.fillStyle = "#29a3a3";
-  con.fill();
-  con.closePath();
+  const paddleimg = new Image();
+  paddleimg.src = 'game_images/paddle2.gif';
+  con.drawImage(paddleimg, this.x, game.canvas.height-this.height, this.width, this.height);
   }
 }
 
 function keyDownHandler(e) {
+  if(gamepaused==false)
+  {
     if(e.key == "Right" || e.key == "ArrowRight") {
         paddle.rightPressed = true;
 		enter=true;
@@ -221,6 +309,11 @@ function keyDownHandler(e) {
   resume();
 	}
 }
+if(enter)
+{
+  document.getElementById("gamebutton").style.display="block";
+}
+}
 
 function keyUpHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
@@ -234,35 +327,42 @@ function keyUpHandler(e) {
 
 
 function drawText() {
-	ctx=game.context;
+  ctx=game.context;
+  var grd = ctx.createLinearGradient(0, 0, 0, 20);
+  grd.addColorStop(0, "#261943");
+  grd.addColorStop(1, "#4f1d75");
 	ctx.beginPath();
-    ctx.rect(0,20, game.canvas.width,1);
-    ctx.fillStyle = "#038cfc";
-    ctx.fill();
-    ctx.closePath();
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#038cfc";
-    ctx.fillText("Level: Intermediate", 8, 20);
-      ctx.fillText("Score: "+score, game.canvas.width/2-150, 20);
-  	ctx.fillText("Time Elapsed: "+time, game.canvas.width/2+30, 20);
-      ctx.fillText("Lives: "+lives, game.canvas.width-80, 20);
-      t.value=time;
+  ctx.rect(0,0, game.canvas.width,20);
+  ctx.fillStyle = grd;
+  ctx.fill();
+  ctx.closePath();
+  t.value=time;
+  te.innerHTML="Time Elapsed: "+time;
+  s.innerHTML="Score: "+score;
+  l.innerHTML="Lives: "+lives;
 
 }
 
 function updateGame() {
     game.clear();
+    var audio = document.getElementById("audio2");
     if(ball.x + ball.dx > game.canvas.width-ball.radius || ball.x + ball.dx < ball.radius) {
         ball.dx = -ball.dx;
+        audio.src = "bounce_ball.mp3";
+        audio.play();
     }
     if(ball.y + ball.dy < 20+ball.radius) {
         ball.dy = -ball.dy;
+        audio.src = "bounce_ball.mp3";
+        audio.play();
     }
     else if(ball.y  > game.canvas.height-paddle.height-ball.radius)
     {
         if(ball.x > paddle.x && ball.x < paddle.x + paddle.width)
         {
             ball.dy = -ball.dy;
+            audio.src = "bounce_ball.mp3";
+            audio.play();
         }
         else
         {
@@ -278,7 +378,7 @@ function updateGame() {
     			lives-=1;
     			enter=false;
           pause();
-				var px=Math.random()*5;
+				  px=Math.random()*5;
     			ball=new drawball(game.canvas.width/2,game.canvas.height-10-15,px,-3,10);
     			paddle = new drawpaddle(game.canvas.width/2-75,15,150);
     			}

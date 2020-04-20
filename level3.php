@@ -7,17 +7,38 @@ $name=$_SESSION['name'];
 <html>
 <head>
 <title>Brick Breakout Game</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <style>
 canvas{
   position:absolute;
-  left:10%;
-  background-image: url('bg3.jpg');
+  left:20px;
+  top:10px;
+  background-image: url('game_images/bg3.jpg');
 background-repeat:no-repeat;
  background-size: cover;
 }
 body{
 
- background: linear-gradient(to top, #99ccff 0%, #3399ff 100%);
+ background: linear-gradient(to top, #aaff80 0%, #206020 100%);
+}
+.info{
+  position:absolute;
+  left:1040px;
+  top:10px;
+  height:600px;
+  width:250px;
+  background-color:#f5f5f0;
+  color:#2a586f;
+  padding-left:20px;
+  padding-right: 20px;
+  border:2px solid #ccccb3;
+  border-radius:20px;
+  font-size:20px;
+  font-family: Lucida;
 }
 </style>
 </head>
@@ -25,9 +46,34 @@ body{
   <form method="POST" action="" id="level3">
   <input type="hidden" name="time3" id="time">
   </form>
+
+  <div class="info">
+    <p>Level: Difficult</p>
+    <p>Player Name: <?php echo $name;?></p>
+    <p id="timeelapsed"></p>
+    <p id="score"></p>
+    <p id="lives"></p>
+    <audio id="audio" src="bat_hit_ball.mp3" style="display:none"></audio>
+    <audio id="audio2" src="bounce_ball.mp3" style="display:none"></audio>
+    <?php
+    $getquery="SELECT `level3` FROM `userdb` WHERE `name`='$name'";
+    $getresult=mysqli_query($con,$getquery);
+    if($getresult->num_rows > 0)
+    {
+        $row=$getresult->fetch_assoc();
+        $oldlevel3=$row['level3'];
+    }
+    if($oldlevel3!=0){
+    ?>
+    <p>Your Best Time: <?php echo $oldlevel3;?> seconds</p>
+  <?php }?>
+    <button id="gamebutton" class="btn btn-outline-dark" onclick="gamebutton(this)" style="display:none;"><i class="fa fa-pause"></i></button>
+    <br>
+    <button class="btn btn-outline-danger" onClick="javascript:if(confirm('Do you want to Quit the game?')){window.location.replace('quit.php')}">Quit Game</button>
+  </div>
+
 <script>
 var ball=[];
-var ball2;
 var paddle;
 var brick;
 var score = 0;
@@ -36,39 +82,82 @@ var lives=10;
 var enter=[false,false];
 //number of times enter is clicked
 //var count=1;
-var px=[-Math.random()*3,-Math.random()*3];
+var px=[Math.random()*6-3,Math.random()*6-3];
 var px2=Math.random()*3;
 var offset=-60;
-
+var colours=["#0059b3","#ff3333"]
 //Timer
-var isPaused = true;
+var timePaused = true;
 var time=0;
 var t=document.getElementById("time");
+var te=document.getElementById("timeelapsed");
+var s=document.getElementById("score");
+var l=document.getElementById("lives");
+var myVar = setInterval(myTimer ,1000);
+var gamepaused=false;
+//check ball was active before pause
+var pause_enter0=enter[0],pause_enter1=enter[1];
+function gamebutton(b)
+{
+  if(gamepaused==true){
+    resume();
+    gameplay();
+    if(pause_enter0)
+    {
+      enter[0]=true;
+    }
+    if(pause_enter1)
+    {
+      enter[1]=true;
+    }
+    b.innerHTML="<i class='fa fa-pause'></i>";
+  }
+  else {
+    pause();
+    pause_enter0=enter[0];
+    pause_enter1=enter[1];
+    enter[0]=enter[1]=false;
+    gamepause();
+    b.innerHTML="<i class='fa fa-play'></i>";
+  }
+
+}
+
+function gamepause()
+{
+  gamepaused=true;
+}
+function gameplay()
+{
+  gamepaused=false;
+}
+
 var myVar = setInterval(myTimer ,1000);
 function myTimer() {
 
-     if (!isPaused){
+     if (!timePaused){
      ++time;
   }
 }
 
 function pause()
 {
-	isPaused = true;
+	timePaused = true;
 }
 
 function resume()
 {
-    isPaused = false;
+    timePaused = false;
 }
+
 
 function startGame() {
   // document.getElementById("play").style.display="none";
     game.start();
 	//draw balls paddle and brick
 	//drawball(x,y,dx,dy,radius)
-    ball[0]=new drawball(game.canvas.width/2-20,game.canvas.height-10-15,px[0],-3,10);
-	ball[1]=new drawball(game.canvas.width/2+20,game.canvas.height-10-15,px[1],-3,10);
+    ball[0]=new drawball(game.canvas.width/2-20,game.canvas.height-10-15,px[0],-3,10,colours[0]);
+	ball[1]=new drawball(game.canvas.width/2+20,game.canvas.height-10-15,px[1],-3,10,colours[1]);
 	//drawpaddle(x,height,width)
     paddle = new drawpaddle(game.canvas.width/2-60,15,120);
 	//drawbrick(row,col,width, height,padding,offtop,offleft)
@@ -131,11 +220,14 @@ function drawbrick(row,col,width, height,padding,offtop,offleft) {
          this.bricks[c][r].x=x;
          this.bricks[c][r].y=y;
          ctx = game.context;
-         ctx.beginPath();
-         ctx.rect(x,y, this.width,this.height);
-         ctx.fillStyle = "#df9f9f";
-         ctx.fill();
-         ctx.closePath();
+         const img = new Image();
+         img.src = 'game_images/bricks3.png';
+         ctx.drawImage(img, x, y, this.width, this.height);
+         // ctx.beginPath();
+         // ctx.rect(x,y, this.width,this.height);
+         // ctx.fillStyle = "#df9f9f";
+         // ctx.fill();
+         // ctx.closePath();
        }
      }
    }
@@ -157,6 +249,9 @@ function collision() {
 						           b.status = 0;
                        //update the score
 						           score+=10;
+                       var audio = document.getElementById("audio");
+                       audio.src = "bat_hit_ball.mp3";
+                       audio.play();
 					             if(score == brick.count*10) {
                        //alert(brick.count)
                         brick.updatebricks();
@@ -183,6 +278,8 @@ function collision() {
     }
 }
 
+
+
 //to calculate number of bricks
 function sum(num)
 {
@@ -194,21 +291,56 @@ function sum(num)
   return sum;
 }
 
-function drawball(x,y,dx,dy,radius)
+function drawball(x,y,dx,dy,radius,colour)
 {
   this.x=x;
   this.y=y;
   this.dx=dx;
   this.dy=dy;
   this.radius=radius;
+  this.colour=colour;
   this.updateball=function(){
     con=game.context;
     con.beginPath();
     //arc center x,y radius,from angle to angle
     con.arc(this.x,this.y, this.radius, 0, Math.PI*2);
-    con.fillStyle = "#bf4080";
+    con.fillStyle = this.colour;
+    var grd = con.createRadialGradient(this.x-2,this.y-2, this.radius/20,this.x,this.y, this.radius);
+    grd.addColorStop(0,"#fff");
+    grd.addColorStop(1,this.colour);
+    con.fillStyle =grd;
     con.fill();
     con.closePath();
+  }
+}
+
+function ballcollision()
+{
+  // distance between centers
+  var cx=ball[0].x-ball[1].x,
+  cy=ball[0].y-ball[1].y,
+  dist=Math.sqrt(cx*cx+cy*cy);
+  if(dist<=ball[0].radius+ball[1].radius)
+  {
+    // var angle=Math.atan2(cy,cx),
+    //  sin=Math.sine(angle),
+    //  cos=Math.cosine(angle);
+
+     var v1x = ball[0].dx,
+      v2x = ball[1].dx,
+      v1y = ball[0].dy,
+      v2y =ball[1].dy;
+        //Calculate the new velocity components
+        var vel1x = (2*v2x)/2,
+            vel2x = (2*v1x)/2,
+            vel1y = (2*v1y)/2,
+            vel2y = (2*v2y)/2;
+
+        //Set the new velocities
+        ball[0].dx = vel1x;
+        ball[1].dx = vel2x;
+        ball[0].dy = vel1y;
+        ball[1].dy = vel2y;
   }
 }
 
@@ -222,17 +354,21 @@ function drawpaddle(x,height,width){
   document.addEventListener("keyup", keyUpHandler, false);
   this.updatepaddle=function(){
   con=game.context;
-  con.beginPath();
-  con.rect(this.x, game.canvas.height-this.height, this.width, this.height);
-  con.fillStyle = "#29a3a3";
-  con.fill();
-  con.closePath();
+  // con.beginPath();
+  // con.rect(this.x, game.canvas.height-this.height, this.width, this.height);
+  // con.fillStyle = "#29a3a3";
+  // con.fill();
+  // con.closePath();
+  const paddleimg = new Image();
+  paddleimg.src = 'game_images/paddle3.gif';
+  con.drawImage(paddleimg, this.x, game.canvas.height-this.height, this.width, this.height);
   }
 }
 
 function keyDownHandler(e) {
 //on right or left click move both balls
-
+if(gamepaused==false)
+{
     if(e.key == "Right" || e.key == "ArrowRight") {
         paddle.rightPressed = true;
 		enter[0]=true;
@@ -258,6 +394,11 @@ function keyDownHandler(e) {
   resume();
 	}
 }
+if(enter[0]|| enter[1])
+{
+  document.getElementById("gamebutton").style.display="block";
+}
+}
 
 
 function keyUpHandler(e) {
@@ -271,33 +412,38 @@ function keyUpHandler(e) {
 }
 
 function drawText() {
-	ctx=game.context;
+  ctx=game.context;
+  var grd = ctx.createLinearGradient(0, 0, 0, 20);
+  grd.addColorStop(0, "#206020");
+  grd.addColorStop(1, "#000");
 	ctx.beginPath();
-    ctx.rect(0,19, game.canvas.width,1);
-    ctx.fillStyle = "#77d7f7";
-    ctx.fill();
-    ctx.closePath();
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "#77d7f7";
-    ctx.fillText("Level: Difficult", 8, 20);
-      ctx.fillText("Score: "+score, game.canvas.width/2-150, 20);
-  	ctx.fillText("Time Elapsed: "+time, game.canvas.width/2+30, 20);
-      ctx.fillText("Lives: "+lives, game.canvas.width-80, 20);
-      t.value=time;
+  ctx.rect(0,0, game.canvas.width,20);
+  ctx.fillStyle = grd;
+  ctx.fill();
+  ctx.closePath();
+  t.value=time;
+  te.innerHTML="Time Elapsed: "+time;
+  s.innerHTML="Score: "+score;
+  l.innerHTML="Lives: "+lives;
 }
 
 function updateGame() {
     game.clear();
+    var audio = document.getElementById("audio2");
 	//collision with walls
   for(i=0;i<2;i++)
   {
   //collision with side walls
     if(ball[i].x + ball[i].dx > game.canvas.width-ball[i].radius || ball[i].x + ball[i].dx < ball[i].radius) {
         ball[i].dx = -ball[i].dx;
+        audio.src = "bounce_ball.mp3";
+        audio.play();
     }
 	//collision with top wall
     if(ball[i].y + ball[i].dy < 20+ball[i].radius) {
         ball[i].dy = -ball[i].dy;
+        audio.src = "bounce_ball.mp3";
+        audio.play();
     }
 	//ball fallen down
     else if(ball[i].y > game.canvas.height-paddle.height-ball[i].radius)
@@ -305,6 +451,8 @@ function updateGame() {
         if(ball[i].x > paddle.x && ball[i].x < paddle.x + paddle.width)
         {
             ball[i].dy = -ball[i].dy;
+            audio.src = "bounce_ball.mp3";
+            audio.play();
         }
         else
         {
@@ -324,9 +472,9 @@ function updateGame() {
             pause();
           }
 				//change speed of ball
-				 px[i]=Math.random()*2;
+				 px[i]=Math.random()*6-3;
 
-    			ball[i]=new drawball(game.canvas.width/2-Math.pow(-1,i)*20,game.canvas.height-10-15,px[i],-3,10);
+    			ball[i]=new drawball(game.canvas.width/2-Math.pow(-1,i)*20,game.canvas.height-10-15,px[i],-3,10,colours[i]);
     			paddle = new drawpaddle(game.canvas.width/2-60,15,120);
     			}
         }
@@ -354,7 +502,8 @@ function updateGame() {
     paddle.updatepaddle();
     brick.updatebricks();
     collision();
-	   drawText();
+    ballcollision();
+	  drawText();
 }
 //bricks moving down
 function moveBricks()
