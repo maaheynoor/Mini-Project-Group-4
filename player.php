@@ -7,7 +7,7 @@ session_start();
 
 <html>
 <head>
-<title>formpage</title>
+<title>Players</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -19,53 +19,59 @@ session_start();
   <script src="jquery.min.js"></script>
   <script src="bootstrap.min.js"></script>
   <style>
-	body{
+  body{
 		background-image: url("black.jpg");
 		height: 100%;
 		background-position: center;
 		background-repeat: no-repeat;
 		background-size: cover;
-    padding: 100px;
-    font-size:20px;
+    font-size:25px;
   }
-
-  .btn-secondary
+.container{
+  margin-top:50px;
+  margin-left: 150px;
+}
+  .toggle-btn
   {
-
-    height: 70px;
-  border-radius: 10px;
-	margin: 15px;
-	-webkit-transition: .3s all ease-in-out;
-  -o-transition: .3s all ease-in-out;
-  transition: .3s all ease-in-out;
-  }
-
-  .btn-primary
-  {
+    border-radius:10px;
     background-color: #42a2a9;
     border-color: #929eaa;
     margin-bottom: 3px;
     font-weight:700;
-
+    height: 70px;
+    border-radius: 10px;
+  	margin: 15px;
+  	-webkit-transition: .3s all ease-in-out;
+    -o-transition: .3s all ease-in-out;
+    transition: .3s all ease-in-out;
   }
   .form
   {
-    
     display:none;
-
+    padding:10px;
   }
 
-  label
+label
+  {
+    color: white;
+  }
+a
   {
     color: white;
   }
 
-  a
-  {
-    color: white;
-    font-weight:700;
-  }
+  a:hover {
+    color:#b3b3cc;
+    cursor:pointer;
+  text-decoration:none;
+}
 
+a:active {
+  color:#666699;
+}
+.btn{
+  margin:5px;
+}
 .loader {
   border: 16px solid #f3f3f3;
   border-radius: 50%;
@@ -93,8 +99,6 @@ session_start();
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-
   </style>
   <!-- loader script -->
   <script>
@@ -117,16 +121,15 @@ session_start();
     <div class="row">
       <!-- New player form -->
       <div class="col-sm-6">
-        <button type="button" class="btn btn-secondary"><i class="fa fa-user-plus" style="font-size:36px"> New Player</i></button>
+        <button class="toggle-btn btn btn-secondary"><i class="fa fa-user-plus" style="font-size:36px"> New Player</i></button>
         <form class="form" method="post" action="">
-          <label >Player Name:</label><br>
-          <input type="text" name="name" required><br><br>
+          <label>Player Name:</label><input type="textbox" name="name" required><br><br>
           <input type="submit" name="start" class="btn btn-success btn-lg" value="Start Game">
         </form>
       </div>
       <!-- Existing players -->
       <div class="col-sm-6">
-        <button type= "button" class="btn-secondary" ><i class="fa fa-users" style="font-size:36px"> Existing Players</i></button>
+        <button class="toggle-btn btn btn-secondary"><i class="fa fa-users" style="font-size:36px"> Existing Players</i></button>
         <form class="form" method="post" action="">
         <?php
         // Get all player names from userdb table
@@ -166,7 +169,7 @@ session_start();
   <script>
   //form toggle new player and existing player
       $(function(){
-      $(".btn-secondary").click(function(){
+      $(".toggle-btn").click(function(){
         $(this).siblings('.form').slideToggle(500);
       });
       });
@@ -184,7 +187,7 @@ session_start();
 
 <?php
 //for new player start with level 1
-if(!empty(isset($_POST['start'])))
+if(isset($_POST['start']))
 {
   $name=$_POST['name'];
   $query="INSERT INTO userdb(`name`) VALUES('$name')";
