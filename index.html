@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <!-- Compiled and minified JavaScript -->
@@ -25,39 +27,110 @@ body{
   background-size: cover;
   }
 
-
-.hero-text {
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 40%;
-  padding: 72px;
-}
 a{
-text-decoration:none;
-color:white;
+  position: relative;
+  display: inline-block;
+  padding: 15px 30px;
+  color:#ffff99;
+  text-decoration: none;
+  font-size: 24px;
+  overflow: hidden;
+  transition: 0.2s;
+  background-color: #990033;
 }
 a:hover{
-text-decoration:none;
-color:black;
+  color: #b30059;
+  background:#ffff33;
+  box-shadow: 0 0 10px #ff9900, 0 0 40px #ffcc00, 0 0 80px #ffff1a;
+  transition-delay: 1s;
+  text-decoration: none;
+}
+a span{
+  position: absolute;
+  display: block;
+}
+a span:nth-child(1)  {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg,transparent,#ffff00);
+}
+a:hover span:nth-child(1) {
+  left: 100%;
+  transition: 1s;
+}
+a span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(270deg,transparent,#ffff00);
+}
+a:hover span:nth-child(3) {
+  right: 100%;
+  transition: 1s;
+  transition-delay: 0.5s;
+}
+a span:nth-child(2) {
+  top: -100%;
+  right: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(180deg,transparent,#ffff00);
+}
+a:hover span:nth-child(2) {
+  top: 100%;
+  transition: 1s;
+  transition-delay: 0.25s;
+}
+a span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: linear-gradient(360deg,transparent,#ffff00);
+}
+a:hover span:nth-child(4) {
+  bottom: 100%;
+  transition: 1s;
+  transition-delay: 0.75s;
+}
+.container{
+  position:absolute;
+  left:40%;
+  top:60%;
+  width:40%;
 }
 </style>
 </head>
 <body>
-  <div class="hero-text">
-    <a href="player.php" class="play">
-    <button class="btn btn-large waves-effect waves-light #00897b teal darken-1" type="button" name="action">
+  <div class="container">
+    <a href="player.php">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
       Play<i class="material-icons left">play_arrow</i>
-    </button>
+
     </a>
 
   <br><br>
-  <a href="itp.html" class="itp">
-    <button class="btn btn-large waves-effect waves-light #00897b teal darken-1" type="button" name="action">
+  <a href="itp.html">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
       Instructions to play<i class="material-icons left">list</i>
-    </button>
   </a>
-
+  <br><br>
+  <a href="bestplayers.php">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+      <i class="fa fa-trophy"></i>  Best Players
+  </a>
   </div>
 </body>
 </html>
