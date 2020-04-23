@@ -82,15 +82,6 @@ mysqli_select_db($con,"bbgame");
      text-shadow: 2px 3px 5px rgba(0,0,0,0.25);
 
    }
- .loader {
-   border: 16px solid #f3f3f3;
-   border-radius: 50%;
-   border-top: 16px solid #3498db;
-   width: 120px;
-   height: 120px;
-   -webkit-animation: spin 2s linear infinite; /* Safari */
-   animation: spin 2s linear infinite;
- }
 
  .loader-wrapper
  {
@@ -98,24 +89,137 @@ mysqli_select_db($con,"bbgame");
    height:100%;
    background-color: #5522aa;
  }
+ .ball1{
+     display: flex;
+     justify-content: center;
+ }
+ .ball1:before{
+     height: 20px;
+     width: 60px;
+     position: absolute;
+     content: "";
+     top:60%;
+     left:30%;
+     border-radius: 50%;
+     animation: shrink 1s infinite;
+     -webkit-animation: shrink 1s infinite;
+     background-color: rgba(8,8,8,0.15);
 
- /* Safari */
- @-webkit-keyframes spin {
-   0% { -webkit-transform: rotate(0deg); }
-   100% { -webkit-transform: rotate(360deg); }
  }
 
- @keyframes spin {
-   0% { transform: rotate(0deg); }
-   100% { transform: rotate(360deg); }
+ .ball1:after{
+     position: absolute;
+     content: "";
+     height: 60px;
+     width: 60px;
+     background-color: white;
+     border-radius: 50%;
+     animation: bounce 1s infinite ;
+     -webkit-animation: bounce 1s infinite ;
+     top:20%;
+     left:30%;
+     }
+
+
+     .ball2{
+         display: flex;
+         justify-content: center;
+     }
+     .ball2:before{
+         height: 20px;
+         width: 60px;
+         position: absolute;
+         content: "";
+         top:60%;
+         left:50%;
+         border-radius: 50%;
+         animation: shrink 1s infinite;
+         -webkit-animation: shrink 1s infinite;
+         background-color: rgba(8,8,8,0.15);
+
+     }
+
+     .ball2:after{
+         position: absolute;
+         content: "";
+         height: 60px;
+         width: 60px;
+         background-color: white;
+         border-radius: 50%;
+         animation: bounce 1s infinite ;
+         -webkit-animation: bounce 1s infinite ;
+         top:20%;
+         left:50%;
+         }
+
+         .ball3{
+             display: flex;
+             justify-content: center;
+         }
+         .ball3:before{
+             height: 20px;
+             width: 60px;
+             position: absolute;
+             content: "";
+             top:60%;
+             left:70%;
+             border-radius: 50%;
+             animation: shrink 1s infinite;
+             -webkit-animation: shrink 1s infinite;
+             background-color: rgba(8,8,8,0.15);
+
+         }
+
+         .ball3:after{
+             position: absolute;
+             content: "";
+             height: 60px;
+             width: 60px;
+             background-color: white;
+             border-radius: 50%;
+             animation: bounce 1s infinite ;
+             -webkit-animation: bounce 1s infinite ;
+             top:20%;
+             left:70%;
+             }
+
+
+     @keyframes shrink{
+         50%{
+             transform: scaleX(0.5);
+         }
+       }
+
+ @keyframes bounce{
+     10%{
+         height: 60px;
+         width: 60px;
+     }
+     30%{
+         height: 65px;
+         width: 55px;
+     }
+     50%{
+         height:50px;
+         width: 65px;
+         transform: translateY(210px);
+     }
+     75%{
+         height: 65px;
+         width:55px;
+     }
+     100%{
+         transform: translateY(0px);
+     }
  }
+
 
    </style>
    <!-- loader script -->
    <script>
    $(window).on('load',function() {
      $('.loader-wrapper').fadeOut(500,function(){
-       $('.content').fadeIn(500);
+       $('.container-fluid').fadeIn(500);
      });
    });
  </script>
@@ -123,8 +227,9 @@ mysqli_select_db($con,"bbgame");
  <body>
    <!-- loader -->
  <div class="loader-wrapper">
-   <div class="loader">
-   </div>
+     <div class="ball1"></div>
+     <div class="ball2"></div>
+     <div class="ball3"></div>
  </div>
  <!-- main content -->
 <div class="container-fluid">
