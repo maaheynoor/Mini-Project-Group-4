@@ -1,0 +1,151 @@
+<html>
+<head>
+<title>Homeform</title>
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
+<style>
+
+body{
+background-image: linear-gradient(-20deg,#990033 0%,#4d1933 100%);
+}
+
+.card{
+	border: 1px solid #602040;
+	border-radius: 10px;
+	box-shadow: 4px 4px 2px #993366;
+	}
+
+.container .row {
+  margin: auto;
+}
+
+ul.a{
+	list-style-type: square;
+}
+
+h3{
+	color:white;
+	font-size:32px;
+	text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+}
+.card-title{
+	padding:10px;
+	text-align: center;
+	border: 1px solid #602040;
+	border-radius: 10px 10px 0px 0px;
+	
+}
+
+.card-panel{
+	border: 1px solid #602040;
+	border-radius: 10px;
+	box-shadow: 4px 4px 2px #993366;
+	}
+	
+
+
+/* Float 3 columns side by side */
+.column {
+  float: left;
+  width: 33%;
+  padding: 0 10px;
+  display: table-cell;
+}
+
+/* Remove extra left and right margins, due to padding */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+@media screen and (max-width: 720px) {
+  .column {
+    width: 100%;
+    display: block;
+    margin-bottom: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+			<h3>
+				Brick Breakout Game - Instructions to Play
+			</h3>
+	<div class="card-panel hoverable">
+	<!--actual content about playing game -->
+		<h4>
+		The game consists of three levels:
+		</h4>
+		<ul class="a">
+			<li>Level 1(Beginner level)</li>
+			<li>Level 2(Intermediate level)</li>
+			<li>Level 3(Difficult level)</li>
+		</ul>
+	</div>
+	<div class="row">
+	<div class="column">
+		<div class="card">
+			<div class="card-title #f8bbd0 pink lighten-4">Level 1</div>
+			<div class="card-content">
+				Beginner/Easy level consists of single ball and single paddle and the number of lives provided for this level are three.
+				Speed of ball is minimum for this level.
+			</div>
+		</div>
+	</div>
+	<div class="column">
+		<div class="card">
+			<div class="card-title #f8bbd0 pink lighten-4">Level 2</div>
+			<div class="card-content">
+				Intermediate level consists of single ball and single paddle and the number of lives provided for this level are three.
+				Speed of the ball is slightly greater than level one.
+			</div>
+		</div>
+	</div>
+	<div class="column">
+				<div class="card">
+			<div class="card-title #f8bbd0 pink lighten-4">Level 3</div>
+			<div class="card-content">
+				Difficult level consists of two balls and single paddle and the number of lives provided for this level are ten.
+				Speed of the ball is greater than level two.
+			</div>
+
+		</div>
+	</div>
+</div>
+		<div class="card-panel hoverable">
+			<h4>Watch Trailer</h4>
+			<video width="100%" controls>
+  <source src="itp.mp4" type="video/mp4">
+  <source src="itp.ogg" type="video/ogg">
+  Your browser does not support HTML video.
+</video>
+	</div>
+
+
+</body>
+</html>
