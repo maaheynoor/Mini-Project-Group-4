@@ -6,7 +6,8 @@ record of all the players and their scores. The website also displays the player
 level as well as for the overall game. Next level is accessible only if the player has 
 completed the previous level. Players can replay any number of times.
 
-Technologies Used: 
+### Technologies Used: 
+
 ![HTML](https://img.shields.io/badge/HTML-239120?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS-239120?&style=for-the-badge&logo=css3&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
